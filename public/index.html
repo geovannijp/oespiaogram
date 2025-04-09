@@ -2,72 +2,79 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oespiãogram</title>
     <style>
       body {
-        font-family: sans-serif;
-        background-color: #f4fff4;
-        color: #333;
-        margin: 0;
-        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0fff5;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .container {
-        max-width: 600px;
-        margin-top: 40px;
+        justify-content: center;
         padding: 20px;
+      }
+
+      .container {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      h1 {
-        color: #25d366;
-      }
-      input, button {
-        padding: 10px;
-        margin-top: 10px;
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 500px;
         width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
+
+      h1 {
+        color: #16a34a;
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      p {
+        margin-bottom: 20px;
+      }
+
+      input,
       button {
-        background-color: #25d366;
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #22c55e;
         color: white;
+        border: none;
         font-weight: bold;
         cursor: pointer;
-        transition: background 0.3s ease;
       }
+
       button:hover {
-        background-color: #1da851;
+        background-color: #16a34a;
       }
-      .user-list {
-        margin-top: 20px;
-        text-align: left;
+
+      ul {
+        margin-top: 10px;
       }
     </style>
   </head>
+
   <body>
     <div class="container">
-      <h1>Oespiãogram 🕵️‍♀️</h1>
+      <h1>Oespiãogram 🕵️‍♂️</h1>
       <p>Descubra quem não te segue de volta e receba alertas via WhatsApp.</p>
 
       <input type="text" placeholder="Digite seu usuário do Instagram" />
-      <button>Ver quem não me segue de volta</button>
 
-      <div class="user-list">
-        <p><strong>Lista de quem não te segue:</strong></p>
-        <ul>
-          <li>@usuario1</li>
-          <li>@usuario2</li>
-        </ul>
-      </div>
+      <button id="checkBtn">Ver quem não me segue de volta</button>
+
+      <div id="resultArea"></div>
 
       <input type="text" placeholder="Seu WhatsApp (apenas DDD + número)" />
       <button>Quero ser notificado se alguém deixar de me seguir</button>
     </div>
+
     <script src="scan.js"></script>
   </body>
 </html>
