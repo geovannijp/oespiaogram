@@ -24,3 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2000);
   });
 });
+// Teste simples de conexão com Supabase
+async function testarSupabase() {
+  const { data, error } = await supabase.from('usuarios').select('*');
+
+  if (error) {
+    console.error('Erro na conexão com Supabase:', error.message);
+  } else {
+    console.log('Conexão com Supabase funcionando! Dados recebidos:', data);
+  }
+}
+
+testarSupabase();
