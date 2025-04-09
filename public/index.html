@@ -2,41 +2,20 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oespiãogram</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   </head>
-  <body class="bg-gray-100 text-gray-800">
-    <div class="min-h-screen flex flex-col justify-center items-center p-4">
-      <h1 class="text-3xl font-bold mb-4">Oespiãogram</h1>
-      <p class="mb-6 text-center max-w-md">
-        Veja quem não te segue de volta no Instagram. E receba um alerta via WhatsApp se alguém deixar de seguir você.
-      </p>
-
-      <input
-        type="text"
-        id="username"
-        placeholder="Seu usuário do Instagram"
-        class="mb-4 px-4 py-2 rounded border w-full max-w-sm"
-      />
-
-      <input
-        type="text"
-        id="whatsapp"
-        placeholder="Seu WhatsApp (apenas DDD + número)"
-        class="mb-4 px-4 py-2 rounded border w-full max-w-sm"
-      />
-
-      <button
-        id="checkBtn"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
-      >
-        Ver quem não me segue de volta
-      </button>
-
-      <div id="resultArea" class="mt-6 max-w-md text-left w-full"></div>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
+      <h1 class="text-2xl font-bold mb-4">Veja quem não te segue de volta no Instagram</h1>
+      <input id="usernameInput" type="text" placeholder="Seu @usuário do Instagram" class="border p-2 rounded w-full mb-2" />
+      <input id="whatsappInput" type="text" placeholder="Seu WhatsApp (DDD + número)" class="border p-2 rounded w-full mb-4" />
+      <button id="checkBtn" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition">Ver quem não me segue de volta</button>
+      <div id="resultArea" class="mt-6 text-left"></div>
     </div>
 
-    <script src="scan.js"></script>
+    <!-- Módulo que chama o scan.js com suporte a import -->
+    <script type="module" src="scan.js"></script>
   </body>
 </html>
