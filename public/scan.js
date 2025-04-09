@@ -1,3 +1,4 @@
+import { supabase } from './supabaseClient.js'
 document.addEventListener('DOMContentLoaded', () => {
   const checkBtn = document.getElementById('checkBtn');
   const resultArea = document.getElementById('resultArea');
