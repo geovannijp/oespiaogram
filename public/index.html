@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oespiãogram</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   </head>
-  <body class="bg-gray-100 text-gray-800 flex flex-col items-center p-6">
+  <body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen p-6">
 
-    <div class="flex items-center space-x-2 mb-6">
-      <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Espião" class="w-10 h-10" />
+    <div class="flex items-center space-x-3 mb-8">
+      <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Espião" class="w-10 h-10">
       <h1 class="text-3xl font-bold">Oespiãogram</h1>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-      <button id="checkBtn" class="bg-blue-600 text-white w-full py-2 px-4 rounded-xl mb-4 hover:bg-blue-700 transition">
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
+      <button id="checkBtn" class="w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition mb-4">
         Ver quem não me segue de volta
       </button>
 
@@ -22,13 +22,21 @@
         id="whatsappInput"
         type="text"
         placeholder="Seu WhatsApp (apenas DDD + número)"
-        class="w-full border border-gray-300 rounded-xl px-4 py-2 mb-4"
+        class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
       />
-      <button id="notifyBtn" class="bg-green-600 text-white w-full py-2 px-4 rounded-xl hover:bg-green-700 transition">
+
+      <button id="notifyBtn" class="w-full bg-green-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-green-700 transition">
         Quero ser notificado se alguém deixar de me seguir
       </button>
 
-      <div id="resultArea" class="mt-6 text-left"></div>
+      <div id="resultArea" class="mt-6">
+        <h2 class="text-xl font-bold mb-2">Exemplo:</h2>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>@exemplo1</li>
+          <li>@fulano_saiu</li>
+          <li>@naotefollow</li>
+        </ul>
+      </div>
     </div>
 
     <script type="module" src="scan.js"></script>
