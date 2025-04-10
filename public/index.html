@@ -26,9 +26,6 @@
         color: #16a34a;
         font-size: 28px;
         margin-bottom: 5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
       }
 
       p {
@@ -60,27 +57,33 @@
       ul {
         margin-top: 10px;
       }
-
-      .emoji {
-        font-size: 26px;
-      }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <h1><span class="emoji">🕵️‍♂️</span> Oespiãogram</h1>
+      <h1>Oespiãogram 🕵️‍♂️</h1>
       <p>Descubra quem não te segue de volta e receba alertas via WhatsApp.</p>
 
-      <input type="text" id="username" placeholder="Seu @ do Instagram" />
+      <input
+        type="text"
+        id="usernameInput"
+        placeholder="Digite seu @ do Instagram"
+      />
       <button id="checkBtn">Ver quem não me segue de volta</button>
 
       <div id="resultArea"></div>
 
-      <input type="text" id="whatsapp" placeholder="Seu WhatsApp (DDD + número)" />
-      <button id="notifyBtn">Receber notificação no WhatsApp</button>
+      <input
+        type="text"
+        id="whatsappInput"
+        placeholder="Seu WhatsApp (apenas DDD + número)"
+      />
+      <button id="notifyBtn">
+        Receber notificação no WhatsApp se alguém deixar de me seguir
+      </button>
     </div>
 
-    <script src="scan.js"></script>
+    <script type="module" src="scan.js"></script>
   </body>
 </html>
