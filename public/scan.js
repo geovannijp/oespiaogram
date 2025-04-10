@@ -1,54 +1,49 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import { supabase } from './supabaseClient.js';
 
-// 🔑 Sua URL e Anon Key:
-const supabaseUrl = 'https://pokrzxuzurjjtcrnkgvl.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBva3J6eHV6dXJqanRjcm5rZ3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNDAzOTIsImV4cCI6MjA1OTgxNjM5Mn0.q9J4AhLDFSOqAWqQnIE1dsqLMxZO8dCTBzQUarLVhLg'
+document.addEventListener('DOMContentLoaded', () => {
+  const checkBtn = document.getElementById('checkBtn');
+  const notifyBtn = document.getElementById('notifyBtn');
+  const resultArea = document.getElementById('resultArea');
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+  checkBtn.addEventListener('click', () => {
+    resultArea.innerHTML = '<p>Analisando seguidores...</p>';
 
-document.getElementById('checkBtn').addEventListener('click', async () => {
-  const usernameInput = document.getElementById('usernameInput')
-  const username = usernameInput.value.trim()
+    setTimeout(() => {
+      const usuariosFicticios = [
+        '@joao123',
+        '@maria_clara',
+        '@pedroseguidor',
+        '@naotemaisvc'
+      ];
 
-  if (!username) {
-    alert('Digite seu @ do Instagram.')
-    return
-  }
+      resultArea.innerHTML = `
+        <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
+        <ul class="list-disc pl-5">
+          ${usuariosFicticios.map(user => `<li>${user}</li>`).join('')}
+        </ul>
+      `;
+    }, 2000);
+  });
 
-  // Simulando verificação
-  const resultados = [
-    '@usuario_inativo',
-    '@nao_te_segue',
-    '@curioso'
-  ]
+  notifyBtn.addEventListener('click', async () => {
+    const username = document.getElementById('usernameInput').value.trim();
+    const whatsapp = document.getElementById('whatsappInput').value.trim();
 
-  const resultArea = document.getElementById('resultArea')
-  resultArea.innerHTML = '<strong>Esses perfis não te seguem de volta:</strong><ul>' +
-    resultados.map(user => `<li>${user}</li>`).join('') +
-    '</ul>'
+    if (!username || !whatsapp) {
+      alert('Preencha seu @ do Instagram e número de WhatsApp.');
+      return;
+    }
 
-  // Salva username no Supabase
-  await supabase.from('usuarios').insert([{ username_instagram: username }])
-})
+    const { data, error } = await supabase
+      .from('usuarios')
+      .insert([{ username, whatsapp }]);
 
-document.getElementById('notifyBtn').addEventListener('click', async () => {
-  const username = document.getElementById('usernameInput').value.trim()
-  const whatsapp = document.getElementById('whatsappInput').value.trim()
-
-  if (!username || !whatsapp) {
-    alert('Preencha os dois campos.')
-    return
-  }
-
-  // Salva no Supabase
-  const { error } = await supabase.from('usuarios').insert([
-    { username_instagram: username, numero_whatsapp: whatsapp }
-  ])
-
-  if (error) {
-    alert('Erro ao salvar. Tente novamente.')
-    console.error(error)
-  } else {
-    alert('Você será notificado via WhatsApp quando alguém deixar de te seguir!')
-  }
-})
+    if (error) {
+      console.error('Erro ao salvar no Supabase:', error.message);
+      alert('Ocorreu um erro. Tente novamente.');
+    } else {
+      alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+      console.log('Dados salvos:', data);
+    }
+  });
+});
