@@ -1,17 +1,23 @@
 const axios = require('axios');
 
-const sendWhatsApp = async (phoneNumber, message) => {
+// ⚙️ Troque pelos seus dados reais da Whapi.cloud
+const WHAPI_INSTANCE_ID = 'MANTIS-ERQ7T';
+const WHAPI_TOKEN = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
+
+// 📤 Função para enviar mensagem no WhatsApp
+async function sendWhatsAppMessage(phone, message) {
   try {
     const response = await axios.post(
-      'https://gate.whapi.cloud/messages/text',
+      `https://gate.whapi.cloud/messages/text`,
       {
-        to: phoneNumber,
+        to: phone,
         body: message,
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.WHAPI_TOKEN}`,
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${WHAPI_TOKEN}`,
+          'X-Instance-ID': WHAPI_INSTANCE_ID
         },
       }
     );
@@ -22,6 +28,7 @@ const sendWhatsApp = async (phoneNumber, message) => {
     console.error('Erro ao enviar mensagem:', error.response?.data || error.message);
     throw error;
   }
-};
+}
 
-module.exports = sendWhatsApp;
+// Exemplo de uso (você pode apagar isso depois de testar)
+sendWhatsAppMessage('5531999999999', 'Olá! Esta é uma mensagem de teste do Oespiãogram.');
