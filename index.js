@@ -16,5 +16,5 @@ app.listen(PORT, () => {
 });
 const sendMessage = require('./send-whatsapp');
 
-sendMessage.sendWhatsAppMessage('5534992666565', 'Testando envio de mensagem pelo Oespiãogram!');
+//sendMessage.sendWhatsAppMessage('5534992666565', 'Testando envio de mensagem pelo Oespiãogram!');
 
