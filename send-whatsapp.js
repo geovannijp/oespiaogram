@@ -31,4 +31,4 @@ async function sendWhatsAppMessage(phone, message) {
 }
 
 // Exemplo de uso (você pode apagar isso depois de testar)
-sendWhatsAppMessage('5531999999999', 'Olá! Esta é uma mensagem de teste do Oespiãogram.');
+sendWhatsAppMessage('5534992666565', 'Olá! Esta é uma mensagem de teste do Oespiãogram.');
