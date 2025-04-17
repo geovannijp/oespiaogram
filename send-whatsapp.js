@@ -3,19 +3,19 @@ const axios = require('axios');
 const WHAPI_INSTANCE_ID = 'MANTIS-ERQ7T';
 const WHAPI_TOKEN = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
 
-//async function sendWhatsAppMessage(phone, message) {
-  //try {
-   // const response = await axios.post(
-     // `https://gate.whapi.cloud/messages/text`,
+async function sendWhatsAppMessage(phone, message) {
+  try {
+    const response = await axios.post(
+     `https://gate.whapi.cloud/messages/text`,
       {
-        //to: phone,
-       // body: message,
+        to: phone,
+        body: message,
       },
       {
-        //headers: {
-         // 'Content-Type': 'application/json',
-          //'Authorization': `Bearer ${WHAPI_TOKEN}`,
-          //'X-Instance-ID': WHAPI_INSTANCE_ID
+        headers: {
+         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${WHAPI_TOKEN}`,
+          'X-Instance-ID': WHAPI_INSTANCE_ID
         },
       }
     );
