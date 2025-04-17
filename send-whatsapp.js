@@ -1,10 +1,8 @@
 const axios = require('axios');
 
-// ⚙️ Troque pelos seus dados reais da Whapi.cloud
 const WHAPI_INSTANCE_ID = 'MANTIS-ERQ7T';
 const WHAPI_TOKEN = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
 
-// 📤 Função para enviar mensagem no WhatsApp
 async function sendWhatsAppMessage(phone, message) {
   try {
     const response = await axios.post(
@@ -30,5 +28,5 @@ async function sendWhatsAppMessage(phone, message) {
   }
 }
 
-// Exemplo de uso (você pode apagar isso depois de testar)
-sendWhatsAppMessage('5534992666565', 'Olá! Esta é uma mensagem de teste do Oespiãogram.');
+// 👇 Isso é importante pra poder importar a função em outro arquivo
+module.exports = { sendWhatsAppMessage };
