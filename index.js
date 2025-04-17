@@ -14,3 +14,7 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+const sendMessage = require('./send-whatsapp');
+
+sendMessage.sendWhatsAppMessage('5534992666565', 'Testando envio de mensagem pelo Oespiãogram!');
+
