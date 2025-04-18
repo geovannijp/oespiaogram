@@ -1,10 +1,17 @@
-import { supabase } from './supabaseClient.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabaseUrl = 'https://pokxzrzurjictnkgvl.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBva3J6eHV6dXJqanRjcm5rZ3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQyNDAzOTIsImV4cCI6MjAyOTgxNjM5Mn0.q9J4AhLDFSOqAWqQnIE1dsqLMxZO8dCTBzQUarLVhLg';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('oespiaogram-form');
   const resultArea = document.getElementById('resultArea');
 
-  if (!form) return;
+  if (!form) {
+    console.error('Formulário não encontrado');
+    return;
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -17,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Simula análise de seguidores
     resultArea.innerHTML = '<p>Analisando seguidores...</p>';
 
     setTimeout(async () => {
@@ -30,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
       `;
 
-      // Salva no Supabase
       const { data, error } = await supabase
         .from('usuarios')
         .insert([{ username, whatsapp }]);
@@ -39,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Erro ao salvar no Supabase:', error.message);
         alert('Ocorreu um erro ao salvar. Tente novamente.');
       } else {
-        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
         console.log('Dados salvos:', data);
+        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
       }
     }, 2000);
   });
