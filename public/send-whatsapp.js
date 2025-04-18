@@ -14,7 +14,7 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer GLrMYTDiGonhRo4iLokey2gv5bRwLfvC'
+        Authorization: `Bearer ${process.env.WHAPI_TOKEN || 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC'}`
       },
       body: JSON.stringify({
         phone: numeroFormatado,
@@ -22,10 +22,15 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
       })
     });
 
+    if (!response.ok) {
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
+    }
+
     const data = await response.json();
     console.log('Resposta do WhatsApp:', data);
     return data;
   } catch (err) {
-    console.error('Erro ao enviar mensagem:', err);
+    console.error('Erro ao enviar mensagem:', err.message);
+    throw err; // Propaga o erro para ser tratado no chamador
   }
 }
