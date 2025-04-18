@@ -10,7 +10,6 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
 
     console.log('Enviando mensagem para:', numeroFormatado);
 
-    // Endpoint da Whapi Cloud (verifique se está correto na documentação)
     const response = await fetch('https://api.whapi.cloud/messages/text', {
       method: 'POST',
       headers: {
@@ -18,7 +17,7 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
         Authorization: 'Bearer GLrMYTDiGonhRo4iLokey2gv5bRwLfvC'
       },
       body: JSON.stringify({
-        to: numeroFormatado + '@c.us', // Formato exigido pela Whapi Cloud
+        to: numeroFormatado + '@c.us',
         body: message
       })
     });
