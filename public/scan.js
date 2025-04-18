@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const username = document.getElementById('usernameInput').value.trim();
-    const whatsapp = document.getElementById('whatsappInput').value.trim();
+    const username_instagram = document.getElementById('usernameInput').value.trim();
+    const numero_whatsapp = document.getElementById('whatsappInput').value.trim();
 
-    if (!username || !whatsapp) {
+    if (!username_instagram || !numero_whatsapp) {
       alert('Preencha seu @ do Instagram e número de WhatsApp.');
       return;
     }
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const { data, error } = await supabase
         .from('usuarios')
-        .insert([{ username, whatsapp }]);
+        .insert([{ username_instagram, numero_whatsapp }]);
 
       if (error) {
         console.error('Erro ao salvar no Supabase:', error.message);
