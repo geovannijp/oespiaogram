@@ -45,16 +45,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (error) {
         console.error('Erro ao salvar no Supabase:', error.message);
         alert('Ocorreu um erro ao salvar. Tente novamente.');
-      } else {
-        console.log('Dados salvos:', data);
-        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+        return;
+      }
 
+      console.log('Dados salvos:', data);
+      alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+
+      // Envia mensagem para o número fornecido
+      try {
         await sendWhatsAppMessage(
           numero_whatsapp,
           '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
         );
+        console.log('Mensagem enviada com sucesso para:', numero_whatsapp);
+      } catch (err) {
+        console.error('Falha ao enviar mensagem:', err);
+        alert('Erro ao enviar mensagem no WhatsApp. Verifique o número e tente novamente.');
       }
-
     }, 2000);
   });
 });
