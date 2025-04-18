@@ -1,29 +1,21 @@
-export async function sendWhatsAppMessage(numero, mensagem) {
-  const instanceId = 'MANTIS-ERQ7T';
-  const token = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
-
-  const url = `https://gate.whapi.cloud/messages/text`;
-
-  const payload = {
-    to: `55${numero}`, // Adiciona o 55 na frente do número
-    body: mensagem
-  };
-
+export async function sendWhatsAppMessage(phoneNumber, message) {
   try {
-    const response = await fetch(url, {
+    const response = await fetch('https://api.whapi.cloud/send-message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: 'Bearer SEU_TOKEN_AQUI'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        phone: phoneNumber, // <- ESSE CAMPO AQUI
+        message
+      })
     });
 
     const data = await response.json();
-    console.log('Resposta da Whapi:', data);
+    console.log('Resposta do WhatsApp:', data);
     return data;
-  } catch (error) {
-    console.error('Erro ao enviar mensagem via WhatsApp:', error);
-    return null;
+  } catch (err) {
+    console.error('Erro ao enviar mensagem:', err);
   }
 }
