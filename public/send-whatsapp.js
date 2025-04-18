@@ -10,7 +10,7 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
 
     console.log('Enviando mensagem para:', numeroFormatado);
 
-    const response = await fetch('https://gate.whapi.cloud/', {
+    const response = await fetch('https://api.whapi.cloud/send-message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
