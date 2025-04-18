@@ -1,32 +1,29 @@
-//const axios = require('axios');
+export async function sendWhatsAppMessage(numero, mensagem) {
+  const instanceId = 'MANTIS-ERQ7T';
+  const token = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
 
-//const WHAPI_INSTANCE_ID = 'MANTIS-ERQ7T';
-//const WHAPI_TOKEN = 'GLrMYTDiGonhRo4iLokey2gv5bRwLfvC';
+  const url = `https://gate.whapi.cloud/messages/text`;
 
-//async function sendWhatsAppMessage(phone, message) {
-//  try {
-//    const response = await axios.post(
-//     `https://gate.whapi.cloud/messages/text`,
-//      {
-//        to: phone,
-//        body: message,
-//      },
-//      {
-//        headers: {
- //        'Content-Type': 'application/json',
- //       'Authorization': `Bearer ${WHAPI_TOKEN}`,
- //         'X-Instance-ID': WHAPI_INSTANCE_ID
-  //      },
-//      }
-//    );
+  const payload = {
+    to: `55${numero}`, // Adiciona o 55 na frente do número
+    body: mensagem
+  };
 
-//    console.log('Mensagem enviada com sucesso:', response.data);
-//    return response.data;
-//  } catch (error) {
-//    console.error('Erro ao enviar mensagem:', error.response?.data || error.message);
-//    throw error;
-//  }
-//}
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
 
-// 👇 Isso é importante pra poder importar a função em outro arquivo
-//module.exports = { sendWhatsAppMessage };
+    const data = await response.json();
+    console.log('Resposta da Whapi:', data);
+    return data;
+  } catch (error) {
+    console.error('Erro ao enviar mensagem via WhatsApp:', error);
+    return null;
+  }
+}
