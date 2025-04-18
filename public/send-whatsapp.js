@@ -14,7 +14,7 @@ export async function sendWhatsAppMessage(phoneNumber, message) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer SEU_TOKEN_AQUI' // <-- substitua pelo seu token válido
+        Authorization: 'Bearer vUWSuVnq93vJbc8EznADfH9cpI7CdpQ8zCjc'
       },
       body: JSON.stringify({
         phone: numeroFormatado,
