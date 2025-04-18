@@ -37,18 +37,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
       `;
 
- if (error) {
-  console.error('Erro ao salvar no Supabase:', error.message);
-  alert('Ocorreu um erro ao salvar. Tente novamente.');
-} else {
-  console.log('Dados salvos:', data);
-  alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+      // Salva no Supabase
+      const { data, error } = await supabase
+        .from('usuarios')
+        .insert([{ username_instagram, numero_whatsapp }]);
 
-  await sendWhatsAppMessage(
-    numero_whatsapp,
-    '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
-  );
-}
+      if (error) {
+        console.error('Erro ao salvar no Supabase:', error.message);
+        alert('Ocorreu um erro ao salvar. Tente novamente.');
+      } else {
+        console.log('Dados salvos:', data);
+        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+
+        await sendWhatsAppMessage(
+          numero_whatsapp,
+          '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
+        );
+      }
 
     }, 2000);
   });
