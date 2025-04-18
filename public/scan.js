@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const username_instagram = document.getElementById('usernameInput').value.trim();
     const numero_whatsapp = document.getElementById('whatsappInput').value.trim();
 
+    console.log('Número capturado do formulário:', numero_whatsapp);
+
     if (!username_instagram || !numero_whatsapp) {
       alert('Preencha seu @ do Instagram e número de WhatsApp.');
       return;
@@ -37,24 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
       `;
 
-      // Salva no Supabase
+      // Salva no Supabase e retorna os dados inseridos
       const { data, error } = await supabase
         .from('usuarios')
-        .insert([{ username_instagram, numero_whatsapp }]);
+        .insert([{ username_instagram, numero_whatsapp }])
+        .select();
 
       if (error) {
         console.error('Erro ao salvar no Supabase:', error.message);
         alert('Ocorreu um erro ao salvar. Tente novamente.');
-      } else {
-        console.log('Dados salvos:', data);
-        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+        return;
+      }
 
-        await sendWhatsAppMessage(
+      console.log('Dados salvos:', data);
+      alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+
+      // Envia mensagem para o número fornecido
+      try {
+        const response = await sendWhatsAppMessage(
           numero_whatsapp,
           '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
         );
+        console.log('Mensagem enviada com sucesso para:', numero_whatsapp, response);
+      } catch (err) {
+        console.error('Falha ao enviar mensagem:', err.message);
+        alert('Erro ao enviar mensagem no WhatsApp. Verifique o número e tente novamente.');
       }
-
     }, 2000);
   });
 });
