@@ -1,31 +1,14 @@
 import { supabase } from './supabaseClient.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const checkBtn = document.getElementById('checkBtn');
-  const notifyBtn = document.getElementById('notifyBtn');
+  const form = document.getElementById('oespiaogram-form');
   const resultArea = document.getElementById('resultArea');
 
-  checkBtn.addEventListener('click', () => {
-    resultArea.innerHTML = '<p>Analisando seguidores...</p>';
+  if (!form) return;
 
-    setTimeout(() => {
-      const usuariosFicticios = [
-        '@joao123',
-        '@maria_clara',
-        '@pedroseguidor',
-        '@naotemaisvc'
-      ];
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      resultArea.innerHTML = `
-        <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
-        <ul class="list-disc pl-5">
-          ${usuariosFicticios.map(user => `<li>${user}</li>`).join('')}
-        </ul>
-      `;
-    }, 2000);
-  });
-
-  notifyBtn.addEventListener('click', async () => {
     const username = document.getElementById('usernameInput').value.trim();
     const whatsapp = document.getElementById('whatsappInput').value.trim();
 
@@ -34,16 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const { data, error } = await supabase
-      .from('usuarios')
-      .insert([{ username, whatsapp }]);
+    // Simula análise de seguidores
+    resultArea.innerHTML = '<p>Analisando seguidores...</p>';
 
-    if (error) {
-      console.error('Erro ao salvar no Supabase:', error.message);
-      alert('Ocorreu um erro. Tente novamente.');
-    } else {
-      alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
-      console.log('Dados salvos:', data);
-    }
+    setTimeout(async () => {
+      const usuariosFicticios = ['@joao123', '@maria_clara', '@pedroseguidor', '@naotemaisvc'];
+
+      resultArea.innerHTML = `
+        <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
+        <ul class="list-disc pl-5">
+          ${usuariosFicticios.map(user => `<li>${user}</li>`).join('')}
+        </ul>
+      `;
+
+      // Salva no Supabase
+      const { data, error } = await supabase
+        .from('usuarios')
+        .insert([{ username, whatsapp }]);
+
+      if (error) {
+        console.error('Erro ao salvar no Supabase:', error.message);
+        alert('Ocorreu um erro ao salvar. Tente novamente.');
+      } else {
+        alert('Você será notificado no WhatsApp quando alguém deixar de te seguir!');
+        console.log('Dados salvos:', data);
+      }
+    }, 2000);
   });
 });
