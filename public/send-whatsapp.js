@@ -1,6 +1,6 @@
 export async function sendWhatsAppMessage(phoneNumber, message) {
   try {
-    const response = await fetch('https://gate.whapi.cloud/', {
+    const response = await fetch('', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
