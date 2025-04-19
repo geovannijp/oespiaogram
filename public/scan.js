@@ -1,3 +1,4 @@
+import { sendWhatsAppMessage } from '../send-whatsapp.js'; // Corrigido o caminho
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabaseUrl = 'https://pokrzxuzurjjtcrnkgvl.supabase.co';
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       // Salvar no Supabase
-      const { data: supabaseData, error } = await supabase
+      const { data, error } = await supabase
         .from('usuarios')
         .insert([{ username_instagram, numero_whatsapp }])
         .select();
@@ -67,21 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Chamar o endpoint do servidor para enviar mensagem no WhatsApp
-      const whatsappResponse = await fetch('/api/send-whatsapp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          numero: numero_whatsapp,
-          mensagem: '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.',
-        }),
-      });
-
-      const whatsappData = await whatsappResponse.json();
-
-      if (!whatsappResponse.ok) {
-        throw new Error(whatsappData.error || 'Erro ao enviar mensagem WhatsApp');
-      }
+      // Enviar mensagem no WhatsApp (mantido como no original)
+      await sendWhatsAppMessage(
+        numero_whatsapp,
+        '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
+      );
 
       alert('Você será notificado quando perder seguidores. Tudo certo!');
     } catch (err) {
