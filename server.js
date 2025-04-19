@@ -13,14 +13,16 @@ app.use(express.static('public'));
 app.post('/api/scrape', async (req, res) => {
   const { username } = req.body;
   if (!username) {
+    console.error('Erro: Username não fornecido');
     return res.status(400).json({ error: 'Username é obrigatório' });
   }
   try {
-    console.log(`Scraping seguidores para ${username}`);
+    console.log(`Processando requisição para ${username}`);
     const followers = await scrapeFollowers(username);
+    console.log(`Seguidores retornados: ${followers.length}`);
     res.json({ followers });
   } catch (err) {
-    console.error('Erro no servidor:', err);
+    console.error('Erro no endpoint /api/scrape:', err.message);
     res.status(500).json({ error: 'Erro ao buscar seguidores' });
   }
 });
