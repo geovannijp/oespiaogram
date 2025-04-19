@@ -3,7 +3,7 @@ export async function scrapeFollowers(username) {
   console.log(`[Scrape] Iniciando scraping para ${username}...`);
   try {
     console.log('[Scrape] Enviando requisição para iniciar run...');
-    const startRun = await fetch(`https://api.apify.com/v2/acts/apify/instagram-scraper/runs?token=${token}`, {
+    const startRun = await fetch(`https://api.apify.com/v2/acts/apify~instagram-scraper/runs?token=${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
