@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ username: username_instagram }),
       });
 
-      const data = await response.json(); // Primeira declaração de 'data'
+      const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao buscar seguidores');
@@ -45,19 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!seguidores || seguidores.length === 0) {
         resultArea.innerHTML = '<p>Nenhum dado encontrado ou perfil inválido.</p>';
-        return;
+      } else {
+        resultArea.innerHTML = `
+          <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
+          <ul class="list-disc pl-5">
+            ${seguidores.map(user => `<li>@${user}</li>`).join('')}
+          </ul>
+          <p class="mt-4 text-sm text-gray-500">(Você será notificado se algum deixar de te seguir.)</p>
+        `;
       }
 
-      resultArea.innerHTML = `
-        <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
-        <ul class="list-disc pl-5">
-          ${seguidores.map(user => `<li>@${user}</li>`).join('')}
-        </ul>
-        <p class="mt-4 text-sm text-gray-500">(Você será notificado se algum deixar de te seguir.)</p>
-      `;
-
       // Salvar no Supabase
-      const { data: supabaseData, error } = await supabase // Renomeado 'data' para 'supabaseData'
+      const { data: supabaseData, error } = await supabase
         .from('usuarios')
         .insert([{ username_instagram, numero_whatsapp }])
         .select();
@@ -69,10 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Enviar mensagem no WhatsApp
+      console.log('[WhatsApp] Tentando enviar mensagem para:', numero_whatsapp);
       await sendWhatsAppMessage(
         numero_whatsapp,
         '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
       );
+      console.log('[WhatsApp] Mensagem enviada com sucesso');
 
       alert('Você será notificado quando perder seguidores. Tudo certo!');
     } catch (err) {
