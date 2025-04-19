@@ -29,23 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
     resultArea.innerHTML = '<p>🔎 Analisando seguidores...</p>';
 
     try {
-      // 🧠 CHAMADA REAL DO SCRAPER
+      // 🧠 Chamada real do scraper com Apify
       const seguidores = await scrapeFollowers(username_instagram);
 
       if (!seguidores || seguidores.length === 0) {
-        resultArea.innerHTML = '<p>Nenhum seguidor encontrado ou perfil inválido.</p>';
+        resultArea.innerHTML = '<p>Nenhum dado encontrado ou perfil inválido.</p>';
         return;
       }
 
       resultArea.innerHTML = `
-        <h2 class="text-xl font-bold mb-2">Esses usuários te seguem:</h2>
+        <h2 class="text-xl font-bold mb-2">Esses usuários não te seguem de volta:</h2>
         <ul class="list-disc pl-5">
           ${seguidores.map(user => `<li>@${user}</li>`).join('')}
         </ul>
-        <p class="mt-4 text-sm text-gray-500">(Ainda não comparamos quem deixou de seguir – em breve!)</p>
+        <p class="mt-4 text-sm text-gray-500">(Você será notificado se algum deixar de te seguir.)</p>
       `;
 
-      // 💾 Salva no Supabase
+      // 💾 Salvar no Supabase
       const { data, error } = await supabase
         .from('usuarios')
         .insert([{ username_instagram, numero_whatsapp }])
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 📲 Envia mensagem no WhatsApp
+      // 📲 Enviar mensagem no WhatsApp
       await sendWhatsAppMessage(
         numero_whatsapp,
         '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
