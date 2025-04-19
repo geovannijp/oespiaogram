@@ -1,9 +1,7 @@
-import { sendWhatsAppMessage } from './send-whatsapp.js';
-import { scrapeFollowers } from './scrape-followers.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabaseUrl = 'https://pokrzxuzurjjtcrnkgvl.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // mantenha completo
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Mantenha sua chave completa
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,8 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
     resultArea.innerHTML = '<p>🔎 Analisando seguidores...</p>';
 
     try {
-      // 🧠 Chamada real do scraper com Apify
-      const seguidores = await scrapeFollowers(username_instagram);
+      // Chamar o endpoint do servidor para scraping
+      const response = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username_instagram }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao buscar seguidores');
+      }
+
+      const seguidores = data.followers || [];
 
       if (!seguidores || seguidores.length === 0) {
         resultArea.innerHTML = '<p>Nenhum dado encontrado ou perfil inválido.</p>';
@@ -45,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="mt-4 text-sm text-gray-500">(Você será notificado se algum deixar de te seguir.)</p>
       `;
 
-      // 💾 Salvar no Supabase
-      const { data, error } = await supabase
+      // Salvar no Supabase
+      const { data: supabaseData, error } = await supabase
         .from('usuarios')
         .insert([{ username_instagram, numero_whatsapp }])
         .select();
@@ -57,11 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 📲 Enviar mensagem no WhatsApp
-      await sendWhatsAppMessage(
-        numero_whatsapp,
-        '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
-      );
+      // Chamar o endpoint do servidor para enviar mensagem no WhatsApp
+      const whatsappResponse = await fetch('/api/send-whatsapp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          numero: numero_whatsapp,
+          mensagem: '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.',
+        }),
+      });
+
+      const whatsappData = await whatsappResponse.json();
+
+      if (!whatsappResponse.ok) {
+        throw new Error(whatsappData.error || 'Erro ao enviar mensagem WhatsApp');
+      }
 
       alert('Você será notificado quando perder seguidores. Tudo certo!');
     } catch (err) {
