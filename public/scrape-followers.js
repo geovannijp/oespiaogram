@@ -1,28 +1,44 @@
-import { createClient } from '@supabase/supabase-js';
-import { getApiKey } from './get-api-key.js';
+// scrape-followers.js
 
-// 🔌 Configurar Supabase
-const supabase = createClient(
-  'https://pokrzxuzurjjtcrnkgvl.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBva3J6eHV6dXJqanRjcm5rZ3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNDAzOTIsImV4cCI6MjA1OTgxNjM5Mn0.q9J4AhLDFSOqAWqQnIE1dsqLMxZO8dCTBzQUarLVhLg'
-);
+export async function scrapeFollowers(username) {
+  const APIFY_TOKEN = 'pDLV1dxKF0g86AZQi'; // ⚠️ substitua!
+  const ACTOR_ID = 'apify/instagram-scraper';
 
-// 📥 Função principal que faz o scraping
-export async function scrapeInstagramPage(username) {
   try {
-    const apiKey = await getApiKey(supabase);
+    const runResponse = await fetch(`https://api.apify.com/v2/actor-tasks/${ACTOR_ID}/runs?token=${APIFY_TOKEN}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        resultsLimit: 100
+      })
+    });
 
-    const response = await fetch(`https://api.webscrapingapi.com/v1?api_key=${apiKey}&url=https://www.instagram.com/${username}/&render_js=1`);
+    const runData = await runResponse.json();
 
-    if (!response.ok) {
-      throw new Error('Erro na chamada da API');
+    const { data } = runData;
+    const { id: runId } = data;
+
+    // Espera a execução do actor terminar
+    let runStatus = 'RUNNING';
+    while (runStatus === 'RUNNING') {
+      const statusRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`);
+      const statusJson = await statusRes.json();
+      runStatus = statusJson.data.status;
+      if (runStatus === 'SUCCEEDED') break;
+      await new Promise(r => setTimeout(r, 3000));
     }
 
-    const html = await response.text();
-    return html;
+    // Busca os resultados
+    const datasetRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&clean=true`);
+    const dataset = await datasetRes.json();
 
+    // Extrai a lista de seguidores (ou o que estiver disponível)
+    const followers = dataset[0]?.followers || [];
+
+    return followers.map(f => f.username);
   } catch (error) {
-    console.error('Erro ao fazer scraping:', error);
-    return null;
+    console.error('Erro ao usar o Apify:', error);
+    return [];
   }
 }
