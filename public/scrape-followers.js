@@ -1,44 +1,48 @@
 // scrape-followers.js
 
 export async function scrapeFollowers(username) {
-  const APIFY_TOKEN = 'pDLV1dxKF0g86AZQi'; // ⚠️ substitua!
-  const ACTOR_ID = 'apify/instagram-scraper';
+  const APIFY_TOKEN = 'apify_api_a1TA0riNUXUbIjnhUMfFRPJ2VeX6e12VOh08'; // substitua!
+  const ACTOR_ID = 'apify/instagram-scraper'; // você está usando esse
 
   try {
-    const runResponse = await fetch(`https://api.apify.com/v2/actor-tasks/${ACTOR_ID}/runs?token=${APIFY_TOKEN}`, {
+    // Roda o Actor
+    const runResponse = await fetch(`https://api.apify.com/v2/acts/${ACTOR_ID}/runs?token=${APIFY_TOKEN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username,
-        resultsLimit: 100
+        username
       })
     });
 
     const runData = await runResponse.json();
+    const runId = runData.data.id;
 
-    const { data } = runData;
-    const { id: runId } = data;
-
-    // Espera a execução do actor terminar
-    let runStatus = 'RUNNING';
-    while (runStatus === 'RUNNING') {
-      const statusRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`);
-      const statusJson = await statusRes.json();
-      runStatus = statusJson.data.status;
-      if (runStatus === 'SUCCEEDED') break;
-      await new Promise(r => setTimeout(r, 3000));
+    // Espera até que o Actor finalize
+    let status = 'RUNNING';
+    while (status === 'RUNNING') {
+      const statusCheck = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`);
+      const statusData = await statusCheck.json();
+      status = statusData.data.status;
+      if (status !== 'RUNNING') break;
+      await new Promise(resolve => setTimeout(resolve, 3000));
     }
 
-    // Busca os resultados
-    const datasetRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&clean=true`);
-    const dataset = await datasetRes.json();
+    // Busca os dados do dataset do run
+    const datasetResponse = await fetch(`https://api.apify.com/v2/datasets/${runId}/items?token=${APIFY_TOKEN}&clean=true&format=json`);
+    const dataset = await datasetResponse.json();
 
-    // Extrai a lista de seguidores (ou o que estiver disponível)
-    const followers = dataset[0]?.followers || [];
+    const result = dataset[0];
 
-    return followers.map(f => f.username);
+    // Extrai o número de seguidores e seguidos
+    return {
+      followersCount: result.followersCount,
+      followsCount: result.followsCount,
+      fullName: result.fullName,
+      username: result.username
+    };
+
   } catch (error) {
-    console.error('Erro ao usar o Apify:', error);
-    return [];
+    console.error('Erro ao rodar scraping com Apify:', error);
+    return null;
   }
 }
