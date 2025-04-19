@@ -1,4 +1,4 @@
-import { sendWhatsAppMessage } from '../send-whatsapp.js'; // Corrigido o caminho
+import { sendWhatsAppMessage } from '../send-whatsapp.js';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabaseUrl = 'https://pokrzxuzurjjtcrnkgvl.supabase.co';
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ username: username_instagram }),
       });
 
-      const data = await response.json();
+      const data = await response.json(); // Primeira declaração de 'data'
 
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao buscar seguidores');
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       // Salvar no Supabase
-      const { data, error } = await supabase
+      const { data: supabaseData, error } = await supabase // Renomeado 'data' para 'supabaseData'
         .from('usuarios')
         .insert([{ username_instagram, numero_whatsapp }])
         .select();
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Enviar mensagem no WhatsApp (mantido como no original)
+      // Enviar mensagem no WhatsApp
       await sendWhatsAppMessage(
         numero_whatsapp,
         '🕵️ Oespiãogram ativado! Você será notificado quando alguém deixar de te seguir no Instagram.'
