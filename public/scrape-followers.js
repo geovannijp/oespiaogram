@@ -73,3 +73,13 @@ export async function scrapeFollowers(targetUsername) {
       await page.evaluate(el => el.scrollTo(0, el.scrollHeight), scrollContainer);
       await page.waitForTimeout(1500);
     }
+
+    await browser.close();
+    console.log(`[Scraper] Seguidores coletados: ${followers.size}`);
+    return Array.from(followers);
+  } catch (err) {
+    console.error('[Scraper] Erro:', err.message);
+    await browser.close();
+    throw err;
+  }
+}
