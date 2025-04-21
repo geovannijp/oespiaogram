@@ -1,56 +1,71 @@
-export async function scrapeFollowers(username) {
-  const token = process.env.APIFY_TOKEN || 'apify_api_a1TA0riNUXUbIjnhUMfFRPJ2VeX6e12VOh08';
-  console.log(`[Scrape] Iniciando scraping para ${username}...`);
+// scrape-followers.js
+import puppeteerExtra from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import puppeteer from 'puppeteer';
+puppeteerExtra.use(StealthPlugin());
+
+export async function scrapeFollowers(targetUsername) {
+  const browser = await puppeteerExtra.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const page = await browser.newPage();
+
+  const igUser = 'ovikingdomotion';
+  const igPass = '1q2w3egG#';
+
   try {
-    console.log('[Scrape] Enviando requisição para iniciar run...');
-    const startRun = await fetch(`https://api.apify.com/v2/acts/apify~instagram-scraper/runs?token=${token}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        input: {
-          directUrls: [`https://www.instagram.com/${username}`],
-          resultsLimit: 10
-        }
-      }),
-    });
-    const runData = await startRun.json();
-    console.log('[Scrape] Resposta do startRun:', JSON.stringify(runData, null, 2));
-    if (!runData.data?.id) {
-      console.error('[Scrape] Erro: Nenhum runId retornado');
-      return [];
+    // Login no Instagram
+    await page.goto('https://www.instagram.com/accounts/login/', { waitUntil: 'networkidle2' });
+    await page.waitForSelector('input[name="username"]');
+    await page.type('input[name="username"]', igUser, { delay: 50 });
+    await page.type('input[name="password"]', igPass, { delay: 50 });
+    await page.click('button[type="submit"]');
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+
+    // Acessa o perfil desejado
+    await page.goto(`https://www.instagram.com/${targetUsername}/`, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(2000);
+
+    // Clica em "seguidores"
+    const followersBtn = await page.$('a[href$="/followers/"]');
+    if (!followersBtn) throw new Error('Botão de seguidores não encontrado!');
+    await followersBtn.click();
+
+    // Espera o modal
+    await page.waitForSelector('._aano');
+    await page.waitForTimeout(1000);
+
+    const scrollContainer = await page.$('._aano');
+
+    let followers = new Set();
+    let lastHeight = 0;
+    let sameCount = 0;
+
+    while (sameCount < 3) {
+      const current = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('._aano span span'))
+          .map(el => el.textContent)
+          .filter(Boolean);
+      });
+
+      current.forEach(f => followers.add(f));
+
+      const height = await page.evaluate(el => el.scrollHeight, scrollContainer);
+      if (height === lastHeight) sameCount++;
+      else sameCount = 0;
+      lastHeight = height;
+
+      await page.evaluate(el => el.scrollTo(0, el.scrollHeight), scrollContainer);
+      await page.waitForTimeout(1500);
     }
-    const runId = runData.data.id;
-    let isFinished = false;
-    let runResult = null;
-    console.log('[Scrape] Aguardando conclusão do run ID:', runId);
-    while (!isFinished) {
-      const checkStatus = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${token}`);
-      runResult = await checkStatus.json();
-      console.log('[Scrape] Status do run:', runResult.data.status);
-      isFinished = runResult.data.status === 'SUCCEEDED';
-      if (runResult.data.status === 'FAILED' || runResult.data.status === 'TIMED_OUT') {
-        console.error('[Scrape] Run falhou ou expirou:', runResult.data.status);
-        return [];
-      }
-      if (!isFinished) {
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      }
-    }
-    const datasetId = runResult.data.defaultDatasetId;
-    console.log('[Scrape] Dataset ID:', datasetId);
-    if (!datasetId) {
-      console.error('[Scrape] Erro: Nenhum datasetId retornado');
-      return [];
-    }
-    console.log('[Scrape] Buscando dados do dataset...');
-    const datasetRes = await fetch(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${token}&clean=true`);
-    const dataset = await datasetRes.json();
-    console.log('[Scrape] Dados do dataset:', JSON.stringify(dataset, null, 2));
-    const followers = dataset[0]?.followers || [];
-    console.log('[Scrape] Seguidores encontrados:', followers);
-    return followers.map(user => user.username || user);
+
+    await browser.close();
+    return Array.from(followers);
   } catch (err) {
-    console.error('[Scrape] Erro ao rodar scraping com Apify:', err.message);
-    return [];
+    console.error('[Scraper] Erro:', err.message);
+    await browser.close();
+    throw err;
   }
 }
