@@ -6,7 +6,7 @@ puppeteerExtra.use(StealthPlugin());
 export async function scrapeFollowers(targetUsername) {
   const browser = await puppeteerExtra.launch({
     headless: true,
-    executablePath: '/usr/bin/google-chrome', // Caminho ajustado
+    executablePath: '/usr/bin/chromium',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
