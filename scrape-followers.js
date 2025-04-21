@@ -6,6 +6,7 @@ puppeteerExtra.use(StealthPlugin());
 export async function scrapeFollowers(targetUsername) {
   const browser = await puppeteerExtra.launch({
     headless: true,
+    executablePath: '/usr/bin/chromium-browser', // Caminho do Chrome no Render
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
@@ -16,7 +17,11 @@ export async function scrapeFollowers(targetUsername) {
 
   try {
     console.log('[Scraper] Acessando página de login...');
-    await page.goto('https://www.instagram.com/accounts/login/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.goto('https://www.instagram.com/accounts/login/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 90000
+    });
+
     await page.waitForSelector('input[name="username"]', { timeout: 20000 });
 
     console.log('[Scraper] Digitando credenciais...');
@@ -31,7 +36,10 @@ export async function scrapeFollowers(targetUsername) {
     }
 
     console.log(`[Scraper] Acessando perfil de ${targetUsername}...`);
-    await page.goto(`https://www.instagram.com/${targetUsername}/`, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.goto(`https://www.instagram.com/${targetUsername}/`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 90000
+    });
 
     await page.waitForTimeout(3000);
 
